@@ -151,17 +151,22 @@ public class MetaDataFile
 					LOGGER.warn ("could not parse description for ", about);
 				continue;
 			}
-			
+
+			boolean aboutIsHttpSelf = false;
+			String httpSelf = null;
 			if (about.startsWith ("./"))
 				about = about.substring (2);
 			while (about.startsWith ("/"))
 				about = about.substring (1);
+			if (about.startsWith ("http://") && about.endsWith(".omex")) {
+				about = metaMetaHolder.getEntityPath();
+			}
 			about = "/" + about;
+			about = Utils.pathFixer (Paths.get (about).normalize ().toString ());
 			MetaDataHolder currentEntry = null;
 			String fragmentIdentifier = null;
 			
-			about = Utils.pathFixer (Paths.get (about).normalize ().toString ());
-			
+
 			// try to find the corresponding entry
 			for (ArchiveEntry entry : entries.values ())
 			{
